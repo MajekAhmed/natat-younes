@@ -13,20 +13,22 @@ const ICONS = {
 
 export function renderStartScreen(app) {
   const idleAsset = getCharacterAsset('idle');
-  const station1Completed = LETTERS.filter((l) => l.stationId === 1).every((l) =>
-    isCompleted(l.id)
-  );
+  const nextLetter = getNextLetter();
+  const currentStationId = nextLetter ? nextLetter.stationId : STATIONS[STATIONS.length - 1].id;
 
   const stationsMarkup = STATIONS.map((station) => {
-    const isCurrent = station.status === 'current';
-    const isStation1Star = station.id === 1 && station1Completed;
+    const lettersOfStation = LETTERS.filter((l) => l.stationId === station.id);
+    const isStationCompleted =
+      lettersOfStation.length > 0 && lettersOfStation.every((l) => isCompleted(l.id));
+    const isCurrent = station.id === currentStationId && !isStationCompleted;
+
     return `
-      <li class="station${isCurrent ? ' station--current' : ' station--locked'}${isStation1Star ? ' station--has-star' : ''}"
-          ${isCurrent ? 'aria-current="step"' : 'aria-disabled="true"'}>
+      <li class="station${isCurrent ? ' station--current' : isStationCompleted ? ' station--completed' : ' station--locked'}${isStationCompleted ? ' station--has-star' : ''}"
+          ${isCurrent ? 'aria-current="step"' : isStationCompleted ? '' : 'aria-disabled="true"'}>
         <span class="station__number" aria-hidden="true">${station.order}</span>
         <span class="station__name">${station.nameAr}</span>
         ${
-          isStation1Star
+          isStationCompleted
             ? `<span class="station__star" aria-label="${STRINGS_AR.completedStation}">⭐</span>`
             : isCurrent
               ? ''
