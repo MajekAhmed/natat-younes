@@ -1,0 +1,43 @@
+:root {
+  font-family: "Segoe UI", Tahoma, system-ui, sans-serif;
+  color: #233844;
+  background: #eaf4f5;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  --start-background-image: none;
+  --color-ink: #233844;
+  --color-muted: #607880;
+  --color-teal: #167c80;
+  --color-teal-dark: #0e646a;
+  --color-gold: #f2bd55;
+  --color-paper: rgb(255 255 255 / 78%);
+  --font-arabic: "Segoe UI", Tahoma, system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
+  min-height: 100%;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+  overflow-x: hidden;
+  font-family: var(--font-arabic);
+}
+
+button {
+  font: inherit;
+}
+
+button:focus-visible {
+  outline: 4px solid #8a4c14;
+  outline-offset: 5px;
+}
