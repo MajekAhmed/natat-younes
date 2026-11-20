@@ -4,7 +4,7 @@ export const CHARACTER = {
     idle: 'younes-idle.webp',
     happy: 'younes-happy.webp',
     thinking: 'younes-thinking.webp',
-    introVideo: null,
-    finaleVideo: null,
+    introVideo: 'younes-intro.mp4',
+    finaleVideo: 'younes-finale.mp4',
   },
 };
