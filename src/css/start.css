@@ -12,7 +12,7 @@
 .app-shell::before {
   position: absolute;
   z-index: -1;
-  inset: -8%;
+  inset: -6%;
   background-image:
     var(--start-background-image),
     radial-gradient(ellipse at 18% 68%, rgb(135 211 192 / 54%), transparent 42%),
@@ -21,9 +21,9 @@
   background-position: center;
   background-size: cover;
   content: "";
-  filter: blur(36px);
+  filter: blur(7px) saturate(1.05);
   pointer-events: none;
-  transform: scale(1.05);
+  transform: scale(1.12);
 }
 
 .page-header {
@@ -199,25 +199,72 @@
 }
 
 .station {
-  display: grid;
-  min-height: 42px;
-  grid-template-columns: 2rem minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 0.6rem;
+  min-height: 52px;
   color: #6b7b7f;
   font-size: 0.98rem;
 }
 
-.station__number {
+.station__btn {
   display: grid;
-  width: 2rem;
-  height: 2rem;
+  width: 100%;
+  grid-template-columns: 3.4rem minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.7rem;
+  min-height: 52px;
+  padding: 0.3rem 0.55rem;
+  border: 1.5px solid transparent;
+  border-radius: 16px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: start;
+  cursor: default;
+  transition: background 140ms ease, border-color 140ms ease, transform 140ms ease;
+}
+
+.station--current .station__btn,
+button.station__btn {
+  cursor: pointer;
+}
+
+button.station__btn:hover,
+button.station__btn:focus-visible {
+  background: rgb(33 141 139 / 10%);
+  border-color: rgb(33 141 139 / 35%);
+  transform: translateX(-3px);
+}
+
+button.station__btn:active {
+  transform: translateX(-1px) scale(0.985);
+}
+
+/* Station picture thumbnail */
+.station__thumb {
+  display: grid;
+  width: 3.4rem;
+  height: 2.55rem;
   place-items: center;
-  border: 1px solid #c9d6d4;
-  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid #d5e2df;
+  border-radius: 12px;
   background: #f2f5f2;
+  box-shadow: 0 2px 6px rgb(45 78 73 / 12%);
+}
+
+.station__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 250ms ease;
+}
+
+button.station__btn:hover .station__thumb img {
+  transform: scale(1.12);
+}
+
+.station__thumb--empty {
   color: #708184;
-  font-size: 0.86rem;
+  font-size: 0.9rem;
   font-weight: 800;
 }
 
@@ -227,7 +274,7 @@
 
 .station__lock {
   color: #89979a;
-  font-size: 0.75rem;
+  font-size: 1rem;
 }
 
 .station--current {
@@ -235,10 +282,17 @@
   font-weight: 850;
 }
 
-.station--current .station__number {
+.station--current .station__btn {
+  border-color: rgb(242 189 85 / 65%);
+  background: rgb(242 189 85 / 12%);
+}
+
+.station--current .station__thumb {
   border-color: #b57a1f;
-  background: var(--color-gold);
-  color: #553b12;
+}
+
+.station--completed .station__btn {
+  background: rgb(47 168 79 / 8%);
 }
 
 @keyframes title-glow {
@@ -322,24 +376,24 @@
   }
 
   .journey-list {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.2rem 0.6rem;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.25rem;
   }
 
   .station {
-    min-height: 38px;
-    grid-template-columns: 1.7rem minmax(0, 1fr);
-    gap: 0.4rem;
-    font-size: 0.83rem;
+    min-height: 46px;
+    font-size: 0.88rem;
   }
 
-  .station__number {
-    width: 1.7rem;
-    height: 1.7rem;
+  .station__btn {
+    grid-template-columns: 3rem minmax(0, 1fr) auto;
+    min-height: 46px;
+    gap: 0.55rem;
   }
 
-  .station__lock {
-    display: none;
+  .station__thumb {
+    width: 3rem;
+    height: 2.25rem;
   }
 
   .action-zone {
@@ -359,7 +413,42 @@
   }
 
   .station {
-    min-height: 34px;
+    min-height: 42px;
+  }
+}
+
+/* Landscape phones / short screens: compress the start layout */
+@media (max-height: 560px) and (orientation: landscape) {
+  .page-header {
+    min-height: 56px;
+  }
+
+  .start-layout {
+    grid-template-areas: "hero map" "action map";
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    gap: 0.5rem 1rem;
+    align-content: start;
+  }
+
+  .character-frame {
+    min-height: clamp(96px, 30vh, 140px);
+  }
+
+  .character-image {
+    max-height: clamp(96px, 30vh, 140px);
+  }
+
+  .journey-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.2rem 0.5rem;
+  }
+
+  .station__btn {
+    min-height: 40px;
+  }
+
+  .start-button {
+    min-height: 56px;
   }
 }
 

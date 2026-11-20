@@ -13,6 +13,7 @@ export const STRINGS_AR = {
   lockedStation: 'مقفولة',
   completedStation: 'مكتملة',
   stationStarAlt: 'نجمة المحطة المكتملة',
+  stationEntryAria: (name) => `ادخل محطة ${name}`,
   creditsLine: 'رسوم الكلمات بموجب رخصة CC BY-SA 4.0',
 
   // Encouragement & Feedback

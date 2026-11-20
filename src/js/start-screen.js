@@ -1,7 +1,7 @@
 import { STATIONS } from '../data/stations.js';
 import { LETTERS } from '../data/letters.js';
 import { STRINGS_AR } from '../data/strings.ar.js';
-import { getCharacterAsset, getStartBackground } from './assets.js';
+import { getCharacterAsset, getStartBackground, getStationBackground } from './assets.js';
 import { getNextLetter, isCompleted } from './progress.js';
 import { navigate } from './state.js';
 import { isMuted, toggleMute, onMuteChange } from './audio.js';
@@ -10,6 +10,16 @@ const ICONS = {
   soundOn: `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>`,
   soundMuted: `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>`,
 };
+
+// First letter to open when entering a station: its first unfinished letter,
+// or its first letter (replay) when the whole station is complete.
+function getStationEntryLetter(stationId) {
+  const lettersOfStation = LETTERS.filter((l) => l.stationId === stationId);
+  if (!lettersOfStation.length) return null;
+  return (
+    lettersOfStation.find((l) => !isCompleted(l.id)) || lettersOfStation[0]
+  );
+}
 
 export function renderStartScreen(app) {
   const idleAsset = getCharacterAsset('idle');
@@ -21,19 +31,50 @@ export function renderStartScreen(app) {
     const isStationCompleted =
       lettersOfStation.length > 0 && lettersOfStation.every((l) => isCompleted(l.id));
     const isCurrent = station.id === currentStationId && !isStationCompleted;
+    const isUnlocked = isCurrent || isStationCompleted;
+    const entryLetter = getStationEntryLetter(station.id);
+    const stationThumb = getStationBackground(station);
 
-    return `
-      <li class="station${isCurrent ? ' station--current' : isStationCompleted ? ' station--completed' : ' station--locked'}${isStationCompleted ? ' station--has-star' : ''}"
-          ${isCurrent ? 'aria-current="step"' : isStationCompleted ? '' : 'aria-disabled="true"'}>
-        <span class="station__number" aria-hidden="true">${station.order}</span>
+    const stationState = isStationCompleted
+      ? 'station--completed'
+      : isCurrent
+        ? 'station--current'
+        : 'station--locked';
+
+    const inner = `
+        <span class="station__thumb${stationThumb ? '' : ' station__thumb--empty'}">
+          ${
+            stationThumb
+              ? `<img src="${stationThumb}" alt="" loading="lazy" />`
+              : `<span class="station__thumb-num">${station.order}</span>`
+          }
+        </span>
         <span class="station__name">${station.nameAr}</span>
         ${
           isStationCompleted
             ? `<span class="station__star" aria-label="${STRINGS_AR.completedStation}">⭐</span>`
             : isCurrent
               ? ''
-              : `<span class="station__lock" aria-hidden="true">${STRINGS_AR.lockedStation}</span>`
-        }
+              : `<span class="station__lock" aria-hidden="true">🔒</span>`
+        }`;
+
+    if (isUnlocked && entryLetter) {
+      return `
+      <li class="station ${stationState}${isStationCompleted ? ' station--has-star' : ''}" ${
+        isCurrent ? 'aria-current="step"' : ''
+      }>
+        <button class="station__btn" type="button" data-letter="${entryLetter.id}"
+          aria-label="${STRINGS_AR.stationEntryAria(station.nameAr)}">
+          ${inner}
+        </button>
+      </li>`;
+    }
+
+    return `
+      <li class="station ${stationState}" aria-disabled="true">
+        <div class="station__btn" aria-hidden="true">
+          ${inner}
+        </div>
       </li>`;
   }).join('');
 
@@ -164,6 +205,14 @@ export function renderStartScreen(app) {
   }
 
   button.addEventListener('click', startJourney);
+
+  // Tap any unlocked station to jump straight into it.
+  app.querySelectorAll('.station__btn[data-letter]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      cleanup();
+      navigate('mission', { letterId: btn.dataset.letter });
+    });
+  });
 
   function onKeyDown(event) {
     if (event.key !== 'Enter' || event.defaultPrevented) return;

@@ -66,7 +66,3 @@ export function navigate(screenName, params = {}) {
     window.location.hash = targetHash;
   }
 }
-
-export function getCurrentScreen() {
-  return { screen: currentScreen, params: currentParams };
-}
