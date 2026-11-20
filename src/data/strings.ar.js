@@ -1,7 +1,6 @@
 export const STRINGS_AR = {
   appTitle: 'نطّط يونس',
   startJourney: 'يلا ننط',
-  letsPlay: 'يلا نلعب',
   continue: 'كمّل',
   home: 'الرئيسية',
   returnHome: 'العودة للرئيسية',
@@ -26,9 +25,7 @@ export const STRINGS_AR = {
   // Audio & Media labels
   muteAudio: 'كتم الصوت',
   unmuteAudio: 'تشغيل الصوت',
-  playLetterSound: 'استمع لصوت الحرف',
-  playLetterName: 'استمع لاسم الحرف',
-  playWord: 'استمع للكلمة',
+  replayPrompt: 'اسمع تاني',
   skipVideo: 'تخطي الفيديو',
   playVictoryVideo: 'تشغيل فيديو الفوز',
   letterCardAria: (letter) => `اختر حرف ${letter}`,

@@ -57,7 +57,7 @@ export function renderMissionScreen(app, letterId) {
   const stationBg = getStationBackground(station);
   const wordImgUrl = getWordImage(letter);
 
-  let phase = 'LEARN'; // 'LEARN' | 'CHOOSE' | 'RESULT'
+  let phase = 'CHOOSE'; // 'CHOOSE' | 'RESULT'
   let preparedVideoEl = null;
   let activeKeyHandler = null;
   let thinkingTimer = null;
@@ -251,18 +251,6 @@ export function renderMissionScreen(app, letterId) {
     return false;
   }
 
-  // Auto-play the letter name, then its sound, when entering LEARN.
-  function playLetterIntro() {
-    window.clearTimeout(introTimer);
-    playLetterAudioOrSpeak('letterName', letter.upper);
-    introTimer = window.setTimeout(() => {
-      if (phase !== 'LEARN') return;
-      playLetterAudioOrSpeak('letterSound', letter.word.en, {
-        rate: 0.7,
-      });
-    }, 1500);
-  }
-
   // Reinforce the correct letter by saying its name out loud.
   function playLetterReinforcement() {
     playLetterAudioOrSpeak('letterName', letter.upper, {
@@ -271,100 +259,33 @@ export function renderMissionScreen(app, letterId) {
     });
   }
 
-  // --- PHASE 1: LEARN ---
-  async function renderLearnPhase() {
-    phase = 'LEARN';
-    setCharacterStill('idle');
-
-    phaseContainer.innerHTML = `
-      <div class="learn-phase">
-        <div class="learn-hero-box">
-          <div class="learn-letter-display" lang="en" dir="ltr">
-            <span class="letter-display__upper">${letter.upper}</span>
-            <span class="letter-display__lower">${letter.lower}</span>
-          </div>
-
-          <div class="learn-word-display">
-            <div class="learn-word-en" lang="en" dir="ltr">${letter.word.en}</div>
-            <div class="learn-word-ar">${letter.word.ar}</div>
-          </div>
-
-          ${
-            wordImgUrl
-              ? `<div class="learn-word-image-frame">
-                   <img class="learn-word-image" src="${wordImgUrl}" alt="${letter.word.ar}" />
-                 </div>`
-              : ''
-          }
-
-          <div class="learn-audio-controls" hidden></div>
-        </div>
-
-        <div class="learn-action-zone">
-          <button class="primary-action-btn play-start-btn" type="button">
-            ${STRINGS_AR.letsPlay}
-          </button>
-        </div>
-      </div>`;
-
-    const wordImg = phaseContainer.querySelector('.learn-word-image');
-    if (wordImg) {
-      wordImg.addEventListener('error', () => {
-        const apiFallback = getWordApiFallback(letter);
-        if (apiFallback && wordImg.src !== apiFallback) {
-          wordImg.src = apiFallback;
-        } else {
-          const frame = wordImg.closest('.learn-word-image-frame');
-          if (frame) frame.hidden = true;
-        }
+  // Listen sequence for the prompt: letter name, then its sound, then the
+  // word. Plays on entering the mission and via the replay button, so the
+  // child always hears the letter even without touching anything.
+  function playPromptAudio() {
+    window.clearTimeout(introTimer);
+    playLetterAudioOrSpeak('letterName', letter.upper);
+    introTimer = window.setTimeout(() => {
+      if (phase !== 'CHOOSE') return;
+      playLetterAudioOrSpeak('letterSound', letter.word.en, {
+        rate: 0.7,
       });
-    }
-
-    const startBtn = phaseContainer.querySelector('.play-start-btn');
-    startBtn.addEventListener('click', () => {
-      renderChoosePhase();
-    });
-
-    // Say the letter name and sound when the learning screen appears.
-    playLetterIntro();
-
-    // Check audio availability asynchronously
-    const audioControls = phaseContainer.querySelector('.learn-audio-controls');
-    const audioKeys = [
-      { key: 'letterName', label: STRINGS_AR.playLetterName },
-      { key: 'letterSound', label: STRINGS_AR.playLetterSound },
-      { key: 'word', label: STRINGS_AR.playWord },
-    ];
-
-    for (const item of audioKeys) {
-      const url = getLetterAudio(letter, item.key);
-      if (url) {
-        checkAudioAvailable(url).then((available) => {
-          if (available && phase === 'LEARN') {
-            audioControls.hidden = false;
-            const btn = document.createElement('button');
-            btn.className = 'audio-replay-btn';
-            btn.type = 'button';
-            btn.setAttribute('aria-label', item.label);
-            btn.innerHTML = `${ICONS.audioWave}<span>${item.label}</span>`;
-            btn.addEventListener('click', () => {
-              playFile(url);
-            });
-            audioControls.appendChild(btn);
-          }
-        });
-      }
-    }
+      introTimer = window.setTimeout(() => {
+        if (phase !== 'CHOOSE') return;
+        playLetterAudioOrSpeak('word', letter.word.en);
+      }, 1900);
+    }, 1900);
   }
 
-  // --- PHASE 2: CHOOSE ---
+  // --- PHASE 1: CHOOSE ---
   function renderChoosePhase() {
     phase = 'CHOOSE';
     wrongCount = 0;
     prepareVictoryVideo();
 
-    // Read the word aloud so the child maps sound -> first letter.
-    playLetterAudioOrSpeak('word', letter.word.en, { rate: 0.7 });
+    // Say the letter name, its sound, then the word as soon as the
+    // mission opens — no extra taps needed.
+    playPromptAudio();
 
     const options = shuffle([letter.upper, ...letter.distractors]);
 
@@ -385,6 +306,10 @@ export function renderMissionScreen(app, letterId) {
               <span class="choose-word-ar">${letter.word.ar}</span>
             </div>
           </div>
+
+          <button class="audio-replay-btn prompt-replay-btn" type="button" aria-label="${STRINGS_AR.replayPrompt}">
+            ${ICONS.audioWave}<span>${STRINGS_AR.replayPrompt}</span>
+          </button>
         </div>
 
         <div class="letter-cards-grid" role="group" aria-label="${STRINGS_AR.choosePrompt}">
@@ -420,6 +345,11 @@ export function renderMissionScreen(app, letterId) {
       });
     }
 
+    const replayBtn = phaseContainer.querySelector('.prompt-replay-btn');
+    if (replayBtn) {
+      replayBtn.addEventListener('click', playPromptAudio);
+    }
+
     const cards = Array.from(phaseContainer.querySelectorAll('.letter-card'));
 
     function handleCardChoice(selectedCard, assisted = false) {
@@ -435,6 +365,7 @@ export function renderMissionScreen(app, letterId) {
 
         playCorrectSound();
         playLetterReinforcement();
+        markCompleted(letter.id); // Progress saved the moment they succeed
         triggerCelebration(app.querySelector('.mission-screen') || app);
         srFeedback.textContent = STRINGS_AR.successYounes;
 
@@ -478,11 +409,11 @@ export function renderMissionScreen(app, letterId) {
             renderResultPhase();
           });
         } else {
-          // Fallback when no victory video exists
+          // Fallback when no victory video exists — quick hop to the badge
           setCharacterStill('happy', true);
           victoryTimer = window.setTimeout(() => {
             renderResultPhase();
-          }, 2000);
+          }, 1300);
         }
       } else {
         // Wrong branch: softly dim card, gentle shake, soft neutral tone
@@ -636,16 +567,20 @@ export function renderMissionScreen(app, letterId) {
       </div>`;
 
     const continueBtn = phaseContainer.querySelector('.result-continue-btn');
-    continueBtn.addEventListener('click', () => {
-      markCompleted(letter.id);
-      const next = getNextLetter();
-      cleanup();
-      if (next) {
-        navigate('mission', { letterId: next.id });
-      } else {
-        navigate('completion');
+    continueBtn.addEventListener('click', goToNextMission);
+
+    // Little kids: the next letter arrives on its own after the celebration,
+    // or instantly with any key / button press.
+    victoryTimer = window.setTimeout(goToNextMission, 2800);
+
+    activeKeyHandler = (e) => {
+      if (e.defaultPrevented) return;
+      if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+        e.preventDefault();
+        goToNextMission();
       }
-    });
+    };
+    window.addEventListener('keydown', activeKeyHandler);
 
     const resultHomeBtn = phaseContainer.querySelector('.result-home-btn');
     if (resultHomeBtn) {
@@ -661,6 +596,18 @@ export function renderMissionScreen(app, letterId) {
         cleanup();
         navigate('mission', { letterId: prevLetter.id });
       });
+    }
+  }
+
+  // Advance to the next letter, or the completion screen at the very end.
+  function goToNextMission() {
+    window.clearTimeout(victoryTimer);
+    const next = getNextLetter();
+    cleanup();
+    if (next) {
+      navigate('mission', { letterId: next.id });
+    } else {
+      navigate('completion');
     }
   }
 
@@ -680,5 +627,6 @@ export function renderMissionScreen(app, letterId) {
     }
   }
 
-  renderLearnPhase();
+  setCharacterStill('idle');
+  renderChoosePhase();
 }

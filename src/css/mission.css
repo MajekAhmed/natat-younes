@@ -181,120 +181,6 @@
   transform: translateY(4px);
 }
 
-/* LEARN PHASE */
-.learn-phase {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.5rem;
-  width: 100%;
-  text-align: center;
-}
-
-.learn-hero-box {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  padding: 1.5rem;
-  border: 1px solid rgb(255 255 255 / 80%);
-  border-radius: 28px;
-  background: var(--color-paper);
-  box-shadow: 0 16px 40px rgb(45 78 73 / 10%);
-  backdrop-filter: blur(10px);
-}
-
-.learn-letter-display {
-  display: flex;
-  align-items: baseline;
-  justify-content: center;
-  gap: 1rem;
-  color: var(--color-teal-dark);
-  font-size: clamp(4.5rem, 9vw, 7.5rem);
-  font-weight: 900;
-  line-height: 1;
-  text-shadow: 0 4px 0 rgb(255 255 255 / 80%);
-}
-
-.letter-display__lower {
-  color: #2a8a8e;
-  font-size: 0.85em;
-}
-
-.learn-word-display {
-  margin-top: 0.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
-}
-
-.learn-word-en {
-  font-size: clamp(2rem, 4vw, 3rem);
-  font-weight: 850;
-  color: #1b3842;
-}
-
-.learn-word-ar {
-  font-size: clamp(1.4rem, 2.5vw, 2rem);
-  font-weight: 700;
-  color: var(--color-muted);
-}
-
-.learn-word-image-frame {
-  display: grid;
-  place-items: center;
-  width: 120px;
-  height: 120px;
-  margin: 1rem 0;
-  padding: 0.5rem;
-  border-radius: 24px;
-  background: #ffffff;
-  box-shadow: 0 6px 18px rgb(0 0 0 / 6%);
-}
-
-.learn-word-image {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
-.learn-audio-controls {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.75rem;
-  margin-top: 1rem;
-}
-
-.audio-replay-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  min-width: 72px;
-  min-height: 72px;
-  padding: 0.6rem 1.2rem;
-  border: 1px solid #b7d1cf;
-  border-radius: 20px;
-  background: #ffffff;
-  color: var(--color-teal-dark);
-  font-weight: 750;
-  font-size: 1.05rem;
-  cursor: pointer;
-  touch-action: manipulation;
-  transition: transform 120ms ease, background 120ms ease;
-  box-shadow: 0 4px 10px rgb(0 0 0 / 5%);
-}
-
-.audio-replay-btn:hover {
-  background: #f0f7f7;
-  transform: translateY(-2px);
-}
-
-.audio-replay-btn:active {
-  transform: translateY(2px);
-}
-
 /* CHOOSE PHASE */
 .choose-phase {
   display: flex;
@@ -793,11 +679,6 @@
   }
 }
 
-/* Pop bounce in for letter */
-.learn-letter-display {
-  animation: pop-bounce-in 550ms cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
 @keyframes pop-bounce-in {
   0% {
     transform: scale(0.3) rotate(-6deg);
@@ -814,16 +695,13 @@
 }
 
 /* Interactive Wiggle on Word Images */
-.learn-word-image-frame,
 .choose-prompt-img-frame {
   cursor: pointer;
   transition: transform 180ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
-.learn-word-image-frame:hover,
 .choose-prompt-img-frame:hover {
   transform: scale(1.08) rotate(3deg);
 }
-.learn-word-image-frame:active,
 .choose-prompt-img-frame:active {
   animation: happy-wiggle 400ms ease-in-out;
 }
@@ -881,7 +759,6 @@
   .completion-star,
   .letter-card,
   .primary-action-btn::after,
-  .learn-letter-display,
   .result-badge-card::before,
   .letter-card--shake {
     animation: none !important;
@@ -889,7 +766,6 @@
 }
 
 /* ===== Launch polish: staggered entrances, hint glow, correct pick ===== */
-
 @keyframes hint-glow-pulse {
   0%, 100% {
     transform: scale(1);
@@ -923,18 +799,10 @@
 .letter-cards-grid .letter-card:nth-child(3) { animation-delay: 220ms; }
 .letter-cards-grid .letter-card:nth-child(4) { animation-delay: 300ms; }
 
-/* Gentle float for the big letter while learning */
-.learn-letter-display {
-  animation: float-gentle 3.6s ease-in-out infinite;
-}
-
-/* Learn phase: staggered entrance of hero elements */
-.learn-hero-box > * {
+/* Staggered entrance of the prompt card */
+.choose-prompt-card {
   animation: pop-bounce-in 500ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
-.learn-hero-box > *:nth-child(2) { animation-delay: 90ms; }
-.learn-hero-box > *:nth-child(3) { animation-delay: 180ms; }
-.learn-hero-box > *:nth-child(4) { animation-delay: 270ms; }
 
 /* Hint banner */
 .choose-hint-banner {
@@ -955,8 +823,37 @@
   .letter-card--hint,
   .letter-card--correct,
   .letter-cards-grid .letter-card,
-  .learn-hero-box > *,
+  .choose-prompt-card,
   .choose-hint-banner {
     animation: none !important;
   }
+}
+
+/* Replay button on the mission prompt card */
+.prompt-replay-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.9rem;
+  padding: 0.5rem 1.2rem;
+  border: 2px solid #167c80;
+  border-radius: 999px;
+  background: #ffffff;
+  color: var(--color-teal-dark);
+  font-weight: 800;
+  font-size: 1rem;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: transform 120ms ease, background 120ms ease, box-shadow 120ms ease;
+  box-shadow: 0 4px 0 #0e646a;
+}
+
+.prompt-replay-btn:hover {
+  background: #eef8f8;
+  transform: translateY(-2px);
+}
+
+.prompt-replay-btn:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 #0e646a;
 }
