@@ -1,7 +1,7 @@
 import { STATIONS } from '../data/stations.js';
 import { LETTERS } from '../data/letters.js';
 import { STRINGS_AR } from '../data/strings.ar.js';
-import { getCharacterAsset } from './assets.js';
+import { getCharacterAsset, getStartBackground } from './assets.js';
 import { getNextLetter, isCompleted } from './progress.js';
 import { navigate } from './state.js';
 import { isMuted, toggleMute, onMuteChange } from './audio.js';
@@ -68,6 +68,19 @@ export function renderStartScreen(app) {
   const muteBtn = app.querySelector('.mute-button');
   let idleTimer;
   let unsubMute;
+
+  // Background fallback handling for start screen
+  const startBg = getStartBackground();
+  if (startBg) {
+    const testBg = new Image();
+    testBg.onload = () => {
+      const shell = app.querySelector('.app-shell');
+      if (shell) {
+        shell.style.setProperty('--start-background-image', `url('${startBg}')`);
+      }
+    };
+    testBg.src = startBg;
+  }
 
   function updateMuteState() {
     const muted = isMuted();

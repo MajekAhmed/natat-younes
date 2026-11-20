@@ -5,6 +5,7 @@ import {
   getCharacterAsset,
   getStationBackground,
   getWordImage,
+  getWordApiFallback,
   getLetterAudio,
   getLetterCharacterFile,
 } from './assets.js';
@@ -247,8 +248,13 @@ export function renderMissionScreen(app, letterId) {
     const wordImg = phaseContainer.querySelector('.learn-word-image');
     if (wordImg) {
       wordImg.addEventListener('error', () => {
-        const frame = wordImg.closest('.learn-word-image-frame');
-        if (frame) frame.hidden = true;
+        const apiFallback = getWordApiFallback(letter);
+        if (apiFallback && wordImg.src !== apiFallback) {
+          wordImg.src = apiFallback;
+        } else {
+          const frame = wordImg.closest('.learn-word-image-frame');
+          if (frame) frame.hidden = true;
+        }
       });
     }
 
@@ -333,8 +339,13 @@ export function renderMissionScreen(app, letterId) {
     const promptImg = phaseContainer.querySelector('.choose-prompt-img');
     if (promptImg) {
       promptImg.addEventListener('error', () => {
-        const frame = promptImg.closest('.choose-prompt-img-frame');
-        if (frame) frame.hidden = true;
+        const apiFallback = getWordApiFallback(letter);
+        if (apiFallback && promptImg.src !== apiFallback) {
+          promptImg.src = apiFallback;
+        } else {
+          const frame = promptImg.closest('.choose-prompt-img-frame');
+          if (frame) frame.hidden = true;
+        }
       });
     }
 
