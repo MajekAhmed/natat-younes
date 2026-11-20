@@ -852,3 +852,82 @@
     animation: none !important;
   }
 }
+
+/* ===== Launch polish: staggered entrances, hint glow, correct pick ===== */
+
+@keyframes hint-glow-pulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 8px 0 #0e646a, 0 0 0 0 rgb(242 189 85 / 55%);
+  }
+  50% {
+    transform: scale(1.08);
+    box-shadow: 0 8px 0 #0e646a, 0 0 34px 12px rgb(242 189 85 / 65%);
+  }
+}
+
+.letter-card--hint {
+  animation: hint-glow-pulse 900ms ease-in-out infinite !important;
+  border-color: #f2bd55;
+  z-index: 1;
+}
+
+.letter-card--correct {
+  animation: pop-bounce-in 550ms cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+  border-color: #2fa84f;
+  box-shadow: 0 10px 0 #1d7a36, 0 0 30px 8px rgb(47 168 79 / 45%);
+  z-index: 2;
+}
+
+/* Staggered card entrance in the choose phase */
+.letter-cards-grid .letter-card {
+  animation: pop-bounce-in 500ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+.letter-cards-grid .letter-card:nth-child(1) { animation-delay: 60ms; }
+.letter-cards-grid .letter-card:nth-child(2) { animation-delay: 140ms; }
+.letter-cards-grid .letter-card:nth-child(3) { animation-delay: 220ms; }
+.letter-cards-grid .letter-card:nth-child(4) { animation-delay: 300ms; }
+
+/* Gentle float for the big letter while learning */
+.learn-letter-display {
+  animation: float-gentle 3.6s ease-in-out infinite;
+}
+
+/* Learn phase: staggered entrance of hero elements */
+.learn-hero-box > * {
+  animation: pop-bounce-in 500ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+.learn-hero-box > *:nth-child(2) { animation-delay: 90ms; }
+.learn-hero-box > *:nth-child(3) { animation-delay: 180ms; }
+.learn-hero-box > *:nth-child(4) { animation-delay: 270ms; }
+
+/* Hint banner */
+.choose-hint-banner {
+  margin: 0.9rem auto 0;
+  max-width: 32rem;
+  padding: 0.65rem 1.3rem;
+  border-radius: 999px;
+  background: rgb(242 189 85 / 18%);
+  border: 2px dashed #f2bd55;
+  color: #8a5a14;
+  font-weight: 700;
+  text-align: center;
+  animation: pop-bounce-in 400ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* Small listening activity cue while audio plays */
+.choose-prompt-card.listening::after {
+  content: "";
+  display: none;
+}
+
+/* Reduced motion for the new launch animations */
+@media (prefers-reduced-motion: reduce) {
+  .letter-card--hint,
+  .letter-card--correct,
+  .letter-cards-grid .letter-card,
+  .learn-hero-box > *,
+  .choose-hint-banner {
+    animation: none !important;
+  }
+}

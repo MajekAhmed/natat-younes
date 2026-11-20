@@ -17,6 +17,8 @@ import {
   toggleMute,
   onMuteChange,
   checkAudioAvailable,
+  speak,
+  stopSpeaking,
 } from './audio.js';
 import { markCompleted, getNextLetter } from './progress.js';
 import { navigate } from './state.js';
@@ -60,6 +62,9 @@ export function renderMissionScreen(app, letterId) {
   let activeKeyHandler = null;
   let thinkingTimer = null;
   let victoryTimer = null;
+  let introTimer = null;
+  let assistTimer = null;
+  let wrongCount = 0;
   let unsubMute = null;
 
   app.innerHTML = `
@@ -234,6 +239,38 @@ export function renderMissionScreen(app, letterId) {
     preparedVideoEl.load();
   }
 
+  // Play a letter audio file if it exists locally; otherwise use the
+  // built-in speech synthesis fallback so the game is never silent.
+  async function playLetterAudioOrSpeak(key, fallbackText, opts) {
+    const url = getLetterAudio(letter, key);
+    if (url && (await checkAudioAvailable(url))) {
+      playFile(url);
+      return true;
+    }
+    speak(fallbackText, opts);
+    return false;
+  }
+
+  // Auto-play the letter name, then its sound, when entering LEARN.
+  function playLetterIntro() {
+    window.clearTimeout(introTimer);
+    playLetterAudioOrSpeak('letterName', letter.upper);
+    introTimer = window.setTimeout(() => {
+      if (phase !== 'LEARN') return;
+      playLetterAudioOrSpeak('letterSound', letter.word.en, {
+        rate: 0.7,
+      });
+    }, 1500);
+  }
+
+  // Reinforce the correct letter by saying its name out loud.
+  function playLetterReinforcement() {
+    playLetterAudioOrSpeak('letterName', letter.upper, {
+      pitch: 1.35,
+      rate: 0.75,
+    });
+  }
+
   // --- PHASE 1: LEARN ---
   async function renderLearnPhase() {
     phase = 'LEARN';
@@ -288,6 +325,9 @@ export function renderMissionScreen(app, letterId) {
       renderChoosePhase();
     });
 
+    // Say the letter name and sound when the learning screen appears.
+    playLetterIntro();
+
     // Check audio availability asynchronously
     const audioControls = phaseContainer.querySelector('.learn-audio-controls');
     const audioKeys = [
@@ -320,7 +360,11 @@ export function renderMissionScreen(app, letterId) {
   // --- PHASE 2: CHOOSE ---
   function renderChoosePhase() {
     phase = 'CHOOSE';
+    wrongCount = 0;
     prepareVictoryVideo();
+
+    // Read the word aloud so the child maps sound -> first letter.
+    playLetterAudioOrSpeak('word', letter.word.en, { rate: 0.7 });
 
     const options = shuffle([letter.upper, ...letter.distractors]);
 
@@ -354,6 +398,8 @@ export function renderMissionScreen(app, letterId) {
             .join('')}
         </div>
 
+        <p class="choose-hint-banner" role="status" aria-live="polite" hidden></p>
+
         <div class="choose-reduced-motion-controls" hidden>
           <button class="primary-action-btn next-letter-btn" type="button">
             ${STRINGS_AR.continue}
@@ -376,17 +422,19 @@ export function renderMissionScreen(app, letterId) {
 
     const cards = Array.from(phaseContainer.querySelectorAll('.letter-card'));
 
-    function handleCardChoice(selectedCard) {
+    function handleCardChoice(selectedCard, assisted = false) {
       const chosen = selectedCard.dataset.letter;
-      const isCorrect = chosen === letter.upper;
+      const isCorrect = assisted || chosen === letter.upper;
 
       if (isCorrect) {
         // Correct branch: instant response <= 150ms
         cards.forEach((c) => {
           c.disabled = true;
         });
+        selectedCard.classList.add('letter-card--correct');
 
         playCorrectSound();
+        playLetterReinforcement();
         triggerCelebration(app.querySelector('.mission-screen') || app);
         srFeedback.textContent = STRINGS_AR.successYounes;
 
@@ -455,6 +503,41 @@ export function renderMissionScreen(app, letterId) {
         playWrongSound();
         setCharacterThinking();
         srFeedback.textContent = STRINGS_AR.tryAgainEncouragement;
+
+        // Progressive assist: never leave a child stuck in a failure loop.
+        wrongCount += 1;
+
+        if (wrongCount === 2) {
+          // Gentle hint: make the correct card glow + say the letter slowly.
+          const correctCard = cards.find((c) => c.dataset.letter === letter.upper);
+          if (correctCard && !correctCard.disabled) {
+            correctCard.classList.add('letter-card--hint');
+          }
+          speak(letter.upper, { rate: 0.6, pitch: 1.3 });
+
+          const hintBanner = phaseContainer.querySelector('.choose-hint-banner');
+          if (hintBanner) {
+            hintBanner.textContent = STRINGS_AR.hintGlow;
+            hintBanner.hidden = false;
+          }
+          srFeedback.textContent = STRINGS_AR.hintGlow;
+        } else if (wrongCount === 3) {
+          // Assist out: celebrate picking the correct letter together.
+          const hintBanner = phaseContainer.querySelector('.choose-hint-banner');
+          if (hintBanner) {
+            hintBanner.textContent = `${STRINGS_AR.assistedHint} ${letter.upper}`;
+            hintBanner.hidden = false;
+          }
+
+          const correctCard = cards.find((c) => c.dataset.letter === letter.upper);
+          if (correctCard && !correctCard.disabled) {
+            assistTimer = window.setTimeout(() => {
+              if (phase === 'CHOOSE') {
+                handleCardChoice(correctCard, true);
+              }
+            }, 900);
+          }
+        }
       }
     }
 
@@ -584,6 +667,9 @@ export function renderMissionScreen(app, letterId) {
   function cleanup() {
     window.clearTimeout(thinkingTimer);
     window.clearTimeout(victoryTimer);
+    window.clearTimeout(introTimer);
+    window.clearTimeout(assistTimer);
+    stopSpeaking();
     if (activeKeyHandler) {
       window.removeEventListener('keydown', activeKeyHandler);
       activeKeyHandler = null;

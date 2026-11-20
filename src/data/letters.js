@@ -22,7 +22,7 @@ export const LETTERS = [
     upper: 'B',
     lower: 'b',
     stationId: 1,
-    word: { en: 'Ball', ar: 'كرة', image: 'words/ball.webp' },
+    word: { en: 'Ball', ar: 'كرة', image: 'words/ball.svg' },
     ipa: { name: '/biː/', sound: '/b/' },
     audio: {
       letterName: 'letters/b-name.mp3',
@@ -40,7 +40,7 @@ export const LETTERS = [
     upper: 'C',
     lower: 'c',
     stationId: 1,
-    word: { en: 'Cat', ar: 'قطة', image: 'words/cat.webp' },
+    word: { en: 'Cat', ar: 'قطة', image: 'words/cat.svg' },
     ipa: { name: '/siː/', sound: '/k/' },
     audio: {
       letterName: 'letters/c-name.mp3',
@@ -58,7 +58,7 @@ export const LETTERS = [
     upper: 'D',
     lower: 'd',
     stationId: 1,
-    word: { en: 'Duck', ar: 'بطة', image: 'words/duck.webp' },
+    word: { en: 'Duck', ar: 'بطة', image: 'words/duck.svg' },
     ipa: { name: '/diː/', sound: '/d/' },
     audio: {
       letterName: 'letters/d-name.mp3',
@@ -76,7 +76,7 @@ export const LETTERS = [
     upper: 'E',
     lower: 'e',
     stationId: 2,
-    word: { en: 'Elephant', ar: 'فيل', image: 'words/elephant.webp' },
+    word: { en: 'Elephant', ar: 'فيل', image: 'words/elephant.svg' },
     ipa: { name: '/iː/', sound: '/e/' },
     audio: {
       letterName: 'letters/e-name.mp3',
@@ -94,7 +94,7 @@ export const LETTERS = [
     upper: 'F',
     lower: 'f',
     stationId: 2,
-    word: { en: 'Fish', ar: 'سمكة', image: 'words/fish.webp' },
+    word: { en: 'Fish', ar: 'سمكة', image: 'words/fish.svg' },
     ipa: { name: '/ɛf/', sound: '/f/' },
     audio: {
       letterName: 'letters/f-name.mp3',
@@ -112,7 +112,7 @@ export const LETTERS = [
     upper: 'G',
     lower: 'g',
     stationId: 2,
-    word: { en: 'Giraffe', ar: 'زرافة', image: 'words/giraffe.webp' },
+    word: { en: 'Giraffe', ar: 'زرافة', image: 'words/giraffe.svg' },
     ipa: { name: '/dʒiː/', sound: '/ɡ/' },
     audio: {
       letterName: 'letters/g-name.mp3',
@@ -130,7 +130,7 @@ export const LETTERS = [
     upper: 'H',
     lower: 'h',
     stationId: 2,
-    word: { en: 'Hat', ar: 'قبعة', image: 'words/hat.webp' },
+    word: { en: 'Hat', ar: 'قبعة', image: 'words/hat.svg' },
     ipa: { name: '/eɪtʃ/', sound: '/h/' },
     audio: {
       letterName: 'letters/h-name.mp3',
@@ -148,7 +148,7 @@ export const LETTERS = [
     upper: 'I',
     lower: 'i',
     stationId: 3,
-    word: { en: 'Ice cream', ar: 'آيس كريم', image: 'words/ice-cream.webp' },
+    word: { en: 'Ice cream', ar: 'آيس كريم', image: 'words/ice-cream.svg' },
     ipa: { name: '/aɪ/', sound: '/ɪ/' },
     audio: {
       letterName: 'letters/i-name.mp3',
@@ -166,7 +166,7 @@ export const LETTERS = [
     upper: 'J',
     lower: 'j',
     stationId: 3,
-    word: { en: 'Juice', ar: 'عصير', image: 'words/juice.webp' },
+    word: { en: 'Juice', ar: 'عصير', image: 'words/juice.svg' },
     ipa: { name: '/dʒeɪ/', sound: '/dʒ/' },
     audio: {
       letterName: 'letters/j-name.mp3',
@@ -184,7 +184,7 @@ export const LETTERS = [
     upper: 'K',
     lower: 'k',
     stationId: 3,
-    word: { en: 'Kite', ar: 'طائرة ورقية', image: 'words/kite.webp' },
+    word: { en: 'Kite', ar: 'طائرة ورقية', image: 'words/kite.svg' },
     ipa: { name: '/keɪ/', sound: '/k/' },
     audio: {
       letterName: 'letters/k-name.mp3',
@@ -202,7 +202,7 @@ export const LETTERS = [
     upper: 'L',
     lower: 'l',
     stationId: 3,
-    word: { en: 'Lion', ar: 'أسد', image: 'words/lion.webp' },
+    word: { en: 'Lion', ar: 'أسد', image: 'words/lion.svg' },
     ipa: { name: '/ɛl/', sound: '/l/' },
     audio: {
       letterName: 'letters/l-name.mp3',
@@ -220,7 +220,7 @@ export const LETTERS = [
     upper: 'M',
     lower: 'm',
     stationId: 4,
-    word: { en: 'Monkey', ar: 'قرد', image: 'words/monkey.webp' },
+    word: { en: 'Monkey', ar: 'قرد', image: 'words/monkey.svg' },
     ipa: { name: '/ɛm/', sound: '/m/' },
     audio: {
       letterName: 'letters/m-name.mp3',
@@ -238,7 +238,7 @@ export const LETTERS = [
     upper: 'N',
     lower: 'n',
     stationId: 4,
-    word: { en: 'Nest', ar: 'عش', image: 'words/nest.webp' },
+    word: { en: 'Nest', ar: 'عش', image: 'words/nest.svg' },
     ipa: { name: '/ɛn/', sound: '/n/' },
     audio: {
       letterName: 'letters/n-name.mp3',
@@ -256,7 +256,7 @@ export const LETTERS = [
     upper: 'O',
     lower: 'o',
     stationId: 4,
-    word: { en: 'Orange', ar: 'برتقالة', image: 'words/orange.webp' },
+    word: { en: 'Orange', ar: 'برتقالة', image: 'words/orange.svg' },
     ipa: { name: '/oʊ/', sound: '/ɒ/' },
     audio: {
       letterName: 'letters/o-name.mp3',
@@ -274,7 +274,7 @@ export const LETTERS = [
     upper: 'P',
     lower: 'p',
     stationId: 4,
-    word: { en: 'Panda', ar: 'باندا', image: 'words/panda.webp' },
+    word: { en: 'Panda', ar: 'باندا', image: 'words/panda.svg' },
     ipa: { name: '/piː/', sound: '/p/' },
     audio: {
       letterName: 'letters/p-name.mp3',
@@ -292,7 +292,7 @@ export const LETTERS = [
     upper: 'Q',
     lower: 'q',
     stationId: 5,
-    word: { en: 'Queen', ar: 'ملكة', image: 'words/queen.webp' },
+    word: { en: 'Queen', ar: 'ملكة', image: 'words/queen.svg' },
     ipa: { name: '/kjuː/', sound: '/kw/' },
     audio: {
       letterName: 'letters/q-name.mp3',
@@ -310,7 +310,7 @@ export const LETTERS = [
     upper: 'R',
     lower: 'r',
     stationId: 5,
-    word: { en: 'Rabbit', ar: 'أرنب', image: 'words/rabbit.webp' },
+    word: { en: 'Rabbit', ar: 'أرنب', image: 'words/rabbit.svg' },
     ipa: { name: '/ɑːr/', sound: '/r/' },
     audio: {
       letterName: 'letters/r-name.mp3',
@@ -328,7 +328,7 @@ export const LETTERS = [
     upper: 'S',
     lower: 's',
     stationId: 5,
-    word: { en: 'Sun', ar: 'شمس', image: 'words/sun.webp' },
+    word: { en: 'Sun', ar: 'شمس', image: 'words/sun.svg' },
     ipa: { name: '/ɛs/', sound: '/s/' },
     audio: {
       letterName: 'letters/s-name.mp3',
@@ -346,7 +346,7 @@ export const LETTERS = [
     upper: 'T',
     lower: 't',
     stationId: 5,
-    word: { en: 'Tree', ar: 'شجرة', image: 'words/tree.webp' },
+    word: { en: 'Tree', ar: 'شجرة', image: 'words/tree.svg' },
     ipa: { name: '/tiː/', sound: '/t/' },
     audio: {
       letterName: 'letters/t-name.mp3',
@@ -364,7 +364,7 @@ export const LETTERS = [
     upper: 'U',
     lower: 'u',
     stationId: 6,
-    word: { en: 'Umbrella', ar: 'مظلة', image: 'words/umbrella.webp' },
+    word: { en: 'Umbrella', ar: 'مظلة', image: 'words/umbrella.svg' },
     ipa: { name: '/juː/', sound: '/ʌ/' },
     audio: {
       letterName: 'letters/u-name.mp3',
@@ -382,7 +382,7 @@ export const LETTERS = [
     upper: 'V',
     lower: 'v',
     stationId: 6,
-    word: { en: 'Van', ar: 'شاحنة', image: 'words/van.webp' },
+    word: { en: 'Van', ar: 'شاحنة', image: 'words/van.svg' },
     ipa: { name: '/viː/', sound: '/v/' },
     audio: {
       letterName: 'letters/v-name.mp3',
@@ -400,7 +400,7 @@ export const LETTERS = [
     upper: 'W',
     lower: 'w',
     stationId: 6,
-    word: { en: 'Watch', ar: 'ساعة يد', image: 'words/watch.webp' },
+    word: { en: 'Watch', ar: 'ساعة يد', image: 'words/watch.svg' },
     ipa: { name: '/ˈdʌbəl.juː/', sound: '/w/' },
     audio: {
       letterName: 'letters/w-name.mp3',
@@ -418,7 +418,7 @@ export const LETTERS = [
     upper: 'X',
     lower: 'x',
     stationId: 7,
-    word: { en: 'Xylophone', ar: 'إكسيلوفون', image: 'words/xylophone.webp' },
+    word: { en: 'Xylophone', ar: 'إكسيلوفون', image: 'words/xylophone.svg' },
     ipa: { name: '/ɛks/', sound: '/ks/' },
     audio: {
       letterName: 'letters/x-name.mp3',
@@ -436,7 +436,7 @@ export const LETTERS = [
     upper: 'Y',
     lower: 'y',
     stationId: 7,
-    word: { en: 'Yacht', ar: 'يخت', image: 'words/yacht.webp' },
+    word: { en: 'Yacht', ar: 'يخت', image: 'words/yacht.svg' },
     ipa: { name: '/waɪ/', sound: '/j/' },
     audio: {
       letterName: 'letters/y-name.mp3',
@@ -454,7 +454,7 @@ export const LETTERS = [
     upper: 'Z',
     lower: 'z',
     stationId: 7,
-    word: { en: 'Zebra', ar: 'حمار وحشي', image: 'words/zebra.webp' },
+    word: { en: 'Zebra', ar: 'حمار وحشي', image: 'words/zebra.svg' },
     ipa: { name: '/zɛd/', sound: '/z/' },
     audio: {
       letterName: 'letters/z-name.mp3',

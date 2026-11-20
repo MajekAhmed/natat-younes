@@ -378,3 +378,54 @@
     animation: none !important;
   }
 }
+
+/* ===== Launch polish: credits footer + station stagger ===== */
+
+.start-credits {
+  position: relative;
+  z-index: 2;
+  padding: 0.75rem 1rem 1.1rem;
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--color-muted);
+}
+
+.start-credits a {
+  color: var(--color-teal);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.start-credits a:hover {
+  text-decoration: underline;
+}
+
+@keyframes station-slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(-24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.journey-list .station {
+  animation: station-slide-in 450ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.journey-list .station:nth-child(1) { animation-delay: 120ms; }
+.journey-list .station:nth-child(2) { animation-delay: 200ms; }
+.journey-list .station:nth-child(3) { animation-delay: 280ms; }
+.journey-list .station:nth-child(4) { animation-delay: 360ms; }
+.journey-list .station:nth-child(5) { animation-delay: 440ms; }
+.journey-list .station:nth-child(6) { animation-delay: 520ms; }
+.journey-list .station:nth-child(7) { animation-delay: 600ms; }
+
+/* Reduced motion: skip station stagger */
+@media (prefers-reduced-motion: reduce) {
+  .journey-list .station {
+    animation: none !important;
+  }
+}

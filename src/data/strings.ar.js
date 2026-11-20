@@ -13,11 +13,14 @@ export const STRINGS_AR = {
   lockedStation: 'مقفولة',
   completedStation: 'مكتملة',
   stationStarAlt: 'نجمة المحطة المكتملة',
+  creditsLine: 'رسوم الكلمات بموجب رخصة CC BY-SA 4.0',
 
   // Encouragement & Feedback
   successYounes: 'أحسنت يا يونس!',
   tryAgainEncouragement: 'قريب! جرّب تاني',
   choosePrompt: 'ما الحرف الأول؟',
+  hintGlow: 'دوّر على الحرف اللي بينوّر ✨',
+  assistedHint: 'نختارها مع بعض — هو الحرف:',
 
   // Audio & Media labels
   muteAudio: 'كتم الصوت',

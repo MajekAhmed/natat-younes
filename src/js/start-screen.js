@@ -60,6 +60,10 @@ export function renderStartScreen(app) {
           <ol class="journey-list">${stationsMarkup}</ol>
         </aside>
       </main>
+      <footer class="start-credits">
+        <a href="https://openmoji.org" target="_blank" rel="noopener noreferrer" lang="en" dir="ltr">OpenMoji</a>
+        <span>— ${STRINGS_AR.creditsLine}</span>
+      </footer>
     </div>`;
 
   const image = app.querySelector('.character-image');

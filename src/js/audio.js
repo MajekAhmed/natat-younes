@@ -159,3 +159,65 @@ export async function checkAudioAvailable(url) {
     return false;
   }
 }
+
+// --- Speech synthesis fallback (used when a local audio file is missing) ---
+let cachedVoice = null;
+let voicesWarmedUp = false;
+
+function pickEnglishVoice(synth) {
+  if (cachedVoice) return cachedVoice;
+  const voices = synth.getVoices();
+  if (!voices.length) return null;
+  const preferred =
+    voices.find((v) => v.lang === 'en-US' && v.localService) ||
+    voices.find((v) => v.lang.startsWith('en') && v.localService) ||
+    voices.find((v) => v.lang === 'en-US') ||
+    voices.find((v) => v.lang.startsWith('en'));
+  cachedVoice = preferred || null;
+  return cachedVoice;
+}
+
+if (typeof window !== 'undefined' && window.speechSynthesis) {
+  // Warm voice list (populated asynchronously in some browsers)
+  window.speechSynthesis.getVoices();
+  window.speechSynthesis.addEventListener?.('voiceschanged', () => {
+    cachedVoice = null;
+    const synth = window.speechSynthesis;
+    synth.getVoices();
+    if (voicesWarmedUp) return;
+    voicesWarmedUp = true;
+    speak(' ', { rate: 1, volume: 0 });
+  });
+}
+
+export function speak(text, opts = {}) {
+  if (isMuted() || !text) return null;
+  try {
+    const synth = typeof window !== 'undefined' ? window.speechSynthesis : null;
+    if (!synth) return null;
+
+    synth.cancel();
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'en-US';
+    utterance.rate = opts.rate ?? 0.85;
+    utterance.pitch = opts.pitch ?? 1.2;
+    utterance.volume = opts.volume ?? 1;
+
+    const voice = pickEnglishVoice(synth);
+    if (voice) utterance.voice = voice;
+
+    synth.speak(utterance);
+    return utterance;
+  } catch {
+    return null;
+  }
+}
+
+export function stopSpeaking() {
+  try {
+    window.speechSynthesis?.cancel();
+  } catch {
+    // Silent no-op
+  }
+}
