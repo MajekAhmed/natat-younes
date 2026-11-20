@@ -116,6 +116,8 @@
 }
 
 .start-button {
+  position: relative;
+  overflow: hidden;
   width: min(100%, 330px);
   min-height: 76px;
   padding: 0.8rem 1.6rem;
@@ -129,6 +131,33 @@
   font-weight: 850;
   touch-action: manipulation;
   transition: transform 140ms ease, box-shadow 140ms ease, filter 140ms ease;
+}
+
+.start-button::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -60%;
+  width: 40%;
+  height: 200%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgb(255 255 255 / 35%),
+    transparent
+  );
+  transform: rotate(25deg);
+  animation: start-btn-shimmer 3.6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes start-btn-shimmer {
+  0%, 65% {
+    left: -60%;
+  }
+  100% {
+    left: 140%;
+  }
 }
 
 .start-button:hover {

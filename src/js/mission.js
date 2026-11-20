@@ -20,6 +20,7 @@ import {
 } from './audio.js';
 import { markCompleted, getNextLetter } from './progress.js';
 import { navigate } from './state.js';
+import { triggerCelebration } from './confetti.js';
 
 function shuffle(array) {
   const arr = [...array];
@@ -34,6 +35,7 @@ const ICONS = {
   soundOn: `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>`,
   soundMuted: `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>`,
   home: `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>`,
+  arrowRight: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg>`,
   audioWave: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>`,
   star: `<svg width="64" height="64" viewBox="0 0 24 24" fill="#f2bd55" stroke="#b57a1f" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>`,
 };
@@ -44,6 +46,10 @@ export function renderMissionScreen(app, letterId) {
     navigate('start');
     return;
   }
+
+  const currentIndex = LETTERS.findIndex((item) => item.id === letterId);
+  const prevLetter = currentIndex > 0 ? LETTERS[currentIndex - 1] : null;
+  const nextLetter = currentIndex < LETTERS.length - 1 ? LETTERS[currentIndex + 1] : null;
 
   const station = STATIONS.find((s) => s.id === letter.stationId);
   const stationBg = getStationBackground(station);
@@ -62,13 +68,24 @@ export function renderMissionScreen(app, letterId) {
       <div class="mission-screen__overlay"></div>
 
       <header class="mission-header">
-        <button class="nav-button home-button" type="button" aria-label="${STRINGS_AR.home}">
-          ${ICONS.home}
-          <span class="nav-button__text">${STRINGS_AR.home}</span>
-        </button>
+        <div class="mission-header__actions">
+          <button class="nav-button home-button" type="button" aria-label="${STRINGS_AR.returnHome}">
+            ${ICONS.home}
+            <span class="nav-button__text">${STRINGS_AR.home}</span>
+          </button>
+          ${
+            prevLetter
+              ? `<button class="nav-button prev-button" type="button" aria-label="${STRINGS_AR.previousStage}">
+                   ${ICONS.arrowRight}
+                   <span class="nav-button__text">${STRINGS_AR.previousStage}</span>
+                 </button>`
+              : ''
+          }
+        </div>
         <div class="mission-station-badge" aria-label="${station ? station.nameAr : ''}">
           <span class="mission-station-badge__order">${station ? station.order : ''}</span>
           <span class="mission-station-badge__name">${station ? station.nameAr : ''}</span>
+          <span class="mission-station-badge__count">(${currentIndex + 1}/${LETTERS.length})</span>
         </div>
         <button class="nav-button mute-button" type="button" aria-label="${isMuted() ? STRINGS_AR.unmuteAudio : STRINGS_AR.muteAudio}">
           <span class="mute-button__icon">${isMuted() ? ICONS.soundMuted : ICONS.soundOn}</span>
@@ -131,6 +148,14 @@ export function renderMissionScreen(app, letterId) {
     cleanup();
     navigate('start');
   });
+
+  const prevBtn = app.querySelector('.prev-button');
+  if (prevBtn && prevLetter) {
+    prevBtn.addEventListener('click', () => {
+      cleanup();
+      navigate('mission', { letterId: prevLetter.id });
+    });
+  }
 
   function showMissingAsset(key) {
     charImage.hidden = true;
@@ -362,6 +387,7 @@ export function renderMissionScreen(app, letterId) {
         });
 
         playCorrectSound();
+        triggerCelebration(app.querySelector('.mission-screen') || app);
         srFeedback.textContent = STRINGS_AR.successYounes;
 
         const prefersReducedMotion = window.matchMedia(
@@ -495,6 +521,7 @@ export function renderMissionScreen(app, letterId) {
     }
 
     setCharacterStill('happy', true);
+    triggerCelebration(app.querySelector('.mission-screen') || app);
 
     phaseContainer.innerHTML = `
       <div class="result-phase">
@@ -508,6 +535,20 @@ export function renderMissionScreen(app, letterId) {
           <button class="primary-action-btn result-continue-btn" type="button">
             ${STRINGS_AR.continue}
           </button>
+          <div class="result-secondary-actions">
+            <button class="nav-button result-home-btn" type="button" aria-label="${STRINGS_AR.returnHome}">
+              ${ICONS.home}
+              <span>${STRINGS_AR.home}</span>
+            </button>
+            ${
+              prevLetter
+                ? `<button class="nav-button result-prev-btn" type="button" aria-label="${STRINGS_AR.previousStage}">
+                     ${ICONS.arrowRight}
+                     <span>${STRINGS_AR.previousStage}</span>
+                   </button>`
+                : ''
+            }
+          </div>
         </div>
       </div>`;
 
@@ -522,6 +563,22 @@ export function renderMissionScreen(app, letterId) {
         navigate('completion');
       }
     });
+
+    const resultHomeBtn = phaseContainer.querySelector('.result-home-btn');
+    if (resultHomeBtn) {
+      resultHomeBtn.addEventListener('click', () => {
+        cleanup();
+        navigate('start');
+      });
+    }
+
+    const resultPrevBtn = phaseContainer.querySelector('.result-prev-btn');
+    if (resultPrevBtn && prevLetter) {
+      resultPrevBtn.addEventListener('click', () => {
+        cleanup();
+        navigate('mission', { letterId: prevLetter.id });
+      });
+    }
   }
 
   function cleanup() {
