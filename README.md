@@ -12,6 +12,12 @@ npm run preview
 npm run validate
 ```
 
+## النشر (GitHub Pages)
+
+اللعبة منشورة تلقائياً عبر GitHub Actions في [الرابط المباشر](https://majekahmed.github.io/natat-younes/):
+أي push على `main` يشغل الـ workflow في `.github/workflows/deploy.yml` الذي
+يتحقق من البيانات، يبني المشروع، وينشره على Pages.
+
 ## بنية المشروع
 
 - `src/css/`: تنسيقات الواجهة (الأساس، شاشة البداية، ومهمة الحرف).
