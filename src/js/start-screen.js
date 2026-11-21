@@ -121,7 +121,11 @@ export function renderStartScreen(app) {
     testBg.onload = () => {
       const shell = app.querySelector('.app-shell');
       if (shell) {
-        shell.style.setProperty('--start-background-image', `url('${startBg}')`);
+        // Resolve to an absolute URL: url() inside a CSS custom property
+        // would otherwise be resolved relative to the stylesheet (/assets/)
+        // instead of the page, producing broken /assets/assets/... paths.
+        const absoluteBg = new URL(startBg, document.baseURI).href;
+        shell.style.setProperty('--start-background-image', `url('${absoluteBg}')`);
       }
     };
     testBg.src = startBg;

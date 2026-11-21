@@ -225,10 +225,17 @@ export function renderMissionScreen(app, letterId) {
     showMissingAsset(charImage.dataset.assetKey ?? 'idle');
   });
 
-  // Preload victory video when entering CHOOSE
-  function prepareVictoryVideo() {
+  // Preload victory video when entering CHOOSE — but only if it actually
+  // exists, so missing per-letter videos never hit 404s in the console.
+  async function prepareVictoryVideo() {
     const videoUrl = getLetterCharacterFile(letter, 'victoryVideo');
     if (!videoUrl) return;
+
+    const exists = await checkAudioAvailable(videoUrl);
+    if (!exists) {
+      preparedVideoEl = null;
+      return;
+    }
 
     preparedVideoEl = document.createElement('video');
     preparedVideoEl.className = 'character-video';
